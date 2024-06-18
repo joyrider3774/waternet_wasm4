@@ -34,8 +34,8 @@ void drawCursors()
 	{
         if (spritePos[i][1] < height)
         {
-            selectortiles_8x8.frame = i%8;
-            drawImage(spritePos[i][0], spritePos[i][1], &selectortiles_8x8);
+            setImageFrame(selectortiles_8x8, i%8);
+            drawImage(spritePos[i][0], spritePos[i][1], selectortiles_8x8);
         }
 	}
 	setDrawColor(Index1, Index2, Index3, Index4);
@@ -78,15 +78,15 @@ void setCursorPos(uint8_t cursorNr, uint8_t xPos, uint8_t yPos)
     if (cursorNr >= maxCursors)
         return;
 
-    move_sprite((cursorNr<<3) + 0, ((xPos) << 3),  ((yPos - 1) << 3));
-    move_sprite((cursorNr<<3) + 1,  ((xPos + 1) << 3),  ((yPos) << 3));
-    move_sprite((cursorNr<<3) + 2,  ((xPos) << 3),  ((yPos + 1) << 3));
-    move_sprite((cursorNr<<3) + 3,  ((xPos - 1) << 3),  ((yPos) << 3)); 
+    move_sprite((uint8_t)((cursorNr<<3) + 0), ((uint8_t)((xPos) << 3)),  ((uint8_t)((yPos - 1) << 3)));
+    move_sprite((uint8_t)((cursorNr<<3) + 1),  ((uint8_t)((xPos + 1) << 3)),  ((uint8_t)((yPos) << 3)));
+    move_sprite((uint8_t)((cursorNr<<3) + 2),  ((uint8_t)((xPos) << 3)),  ((uint8_t)((yPos + 1) << 3)));
+    move_sprite((uint8_t)((cursorNr<<3) + 3),  ((uint8_t)((xPos - 1) << 3)),  ((uint8_t)((yPos) << 3))); 
     //corners
-    move_sprite((cursorNr<<3) + 4, ((xPos + 1) << 3),  ((yPos - 1) << 3));
-    move_sprite((cursorNr<<3) + 5, ((xPos + 1) << 3),  ((yPos + 1) << 3));
-    move_sprite((cursorNr<<3) + 6, ((xPos - 1) << 3),  ((yPos - 1) << 3));
-    move_sprite((cursorNr<<3) + 7, ((xPos - 1) << 3),  ((yPos + 1) << 3)); 
+    move_sprite((uint8_t)((cursorNr<<3) + 4), ((uint8_t)((xPos + 1) << 3)),  ((uint8_t)((yPos - 1) << 3)));
+    move_sprite((uint8_t)((cursorNr<<3) + 5), ((uint8_t)((xPos + 1) << 3)),  ((uint8_t)((yPos + 1) << 3)));
+    move_sprite((uint8_t)((cursorNr<<3) + 6), ((uint8_t)((xPos - 1) << 3)),  ((uint8_t)((yPos - 1) << 3)));
+    move_sprite((uint8_t)((cursorNr<<3) + 7), ((uint8_t)((xPos - 1) << 3)),  ((uint8_t)((yPos + 1) << 3))); 
 }
 
 void initCursors()

@@ -9,9 +9,39 @@ uint32_t frames_drawn = 0;
 
 Image* currentTiles = nullptr;
 
-void rect(int32_t x, int32_t y, uint32_t width, uint32_t height)
+uint16_t imageWidth(Image* data)
 {
-	rect_noffset(x, y + SCREEN_Y_OFFSET, width, height);
+	return (uint16_t)((data[1] << 8) + (data[0]));
+}
+
+uint16_t imageHeight(Image* data)
+{
+	return (uint16_t)((data[3] << 8) + (data[2]));
+}
+
+uint8_t imageType(Image* data)
+{
+	return data[4];
+}
+
+uint8_t imageFrame(Image* data)
+{
+	return data[5];
+}
+
+uint8_t* imageImage(Image* data)
+{
+	return &data[6];
+}
+
+void setImageFrame(Image* data, uint8_t frame)
+{
+	data[5] = frame;
+}
+
+void rect_offset(int32_t x, int32_t y, uint32_t width, uint32_t height)
+{
+	rect(x, y + ((int32_t)SCREEN_Y_OFFSET), width, height);
 }
 
 void setPalette(Palette pal)
@@ -30,7 +60,7 @@ bool buttonReleased(int Button)
 
 uint32_t getRandomSeed()
 {
-	return (frames_drawn * rand());
+	return (frames_drawn * (uint32_t)rand());
 }
 
 void randomSeed(unsigned int seed)
@@ -40,7 +70,7 @@ void randomSeed(unsigned int seed)
 
 void set_bkg_tile_xy(uint32_t x, uint32_t y, uint32_t tile)
 {
-	blitSub((*currentTiles).image, x * 8, y * 8 + SCREEN_Y_OFFSET , 8, 8, 0, 8 * tile, (*currentTiles).width, (*currentTiles).flags);
+	blitSub(imageImage(currentTiles), (int32_t)(x * 8), (int32_t)(y * 8 + SCREEN_Y_OFFSET), 8, 8, 0, (8 * tile), imageWidth(currentTiles), imageType(currentTiles));
 }
 
 void set_bkg_data(Image* tiles)
@@ -55,17 +85,17 @@ Image* get_bkg_data()
 
 void set_bkg_tiles(uint32_t x, uint32_t y, Image* map)
 {
-  	blit((*map).image, x, y + SCREEN_Y_OFFSET,  (*map).width, (*map).height, (*map).flags);
+  	blit(imageImage(map), (int32_t)x, (int32_t)(y + SCREEN_Y_OFFSET),  imageWidth(map), imageHeight(map), imageType(map));
 }
 
 void setBlockTilesAsBackground()
 {
-  set_bkg_data(&blocktiles_8x8);
+  set_bkg_data(blocktiles_8x8);
 }
 
 void setDrawColor(ColorIndex Index1, ColorIndex Index2, ColorIndex Index3, ColorIndex Index4)
 {
-	*DRAW_COLORS = (Index1 << 12) + (Index2 << 8) + (Index3 << 4) + (Index4);
+	*DRAW_COLORS = (uint16_t)((Index1 << 12) + (Index2 << 8) + (Index3 << 4) + (Index4));
 }
 
 void getDrawColor(ColorIndex *Index1, ColorIndex *Index2, ColorIndex *Index3, ColorIndex *Index4)
@@ -102,16 +132,16 @@ void clear(ColorIndex Index)
 	ColorIndex Index1, Index2, Index3, Index4;
 	getDrawColor(&Index1, &Index2, &Index3, &Index4);
     setDrawColor(Index1, Index2, Index, Index);
-	rect_noffset(0,0, SCREEN_SIZE, SCREEN_SIZE);
+	rect(0,0, SCREEN_SIZE, SCREEN_SIZE);
 	setDrawColor(Index1, Index2, Index3, Index4);
 }
 
 void drawImage( uint32_t x , uint32_t y, Image *img)
 {
-	blitSub(img->image, x, y + SCREEN_Y_OFFSET, img->width, img->height, 0, img->height * (img->frame), img->width, img->flags);
+	blitSub(imageImage(img), (int32_t)x, (int32_t)(y + SCREEN_Y_OFFSET), imageWidth(img), imageHeight(img), 0, imageHeight(img) * imageFrame(img), imageWidth(img), imageType(img));
 }
 
 uint8_t random(uint8_t val)
 {
-	return (rand() % val);
+	return (uint8_t)(rand() % val);
 }

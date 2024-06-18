@@ -9,7 +9,7 @@
 
 uint16_t frames;
 float titlePosY;
-constexpr uint8_t frameDelay = frameRate*1.5;    
+constexpr uint8_t frameDelay = (uint8_t)(frameRate*1.5);
 
 void initIntro()
 {
@@ -43,7 +43,7 @@ void intro()
         }
         else
         {
-            drawImage(0, (uint32_t)titlePosY, &titlescreen_8x8);
+            drawImage(0, (uint32_t)titlePosY, titlescreen_8x8);
             if(titlePosY > 0)
             {
                 titlePosY -= (float)60/(float)frameRate;

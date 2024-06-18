@@ -351,10 +351,8 @@ void helpDoSlideRotate(uint8_t nextState)
 		set_bkg_tile_xy(14, 6 + incY, 29);
 		set_bkg_tile_xy(15, 6 + incY, 20);
 		set_bkg_tile_xy(16, 6 + incY, 23);
-
-        drawCursors();  
-    }
-
+	}
+	drawCursors();
     updateCursorFrame();
    
     if (buttonReleased(BUTTON_1))

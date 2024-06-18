@@ -14,7 +14,7 @@ void drawTitleScreen()
 {
     clear(INDEX_BLACK);
     
-	drawImage(0, 0, &titlescreen2_8x8);
+	drawImage(0, 0, titlescreen2_8x8);
 
     switch (titleStep)
     {

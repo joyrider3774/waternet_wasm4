@@ -13,7 +13,7 @@ void drawLevel()
     drawLevel(0,0,maxBoardBgWidth, maxBoardBgHeight);
 }
 
-void drawLevel(int8_t x1, int8_t y1, int8_t xend, int8_t yend )
+void drawLevel(uint8_t x1, uint8_t y1, uint8_t xend, uint8_t yend )
 { 
     for (uint8_t y = mmax(y1, 0); y != mmin(yend, maxBoardBgHeight); y++)
     {

@@ -7,6 +7,10 @@
 
 extern uint32_t frames_drawn;
 
+#define Color uint32_t
+#define ColorIndex uint8_t
+#define Image uint8_t
+
 typedef struct Palette Palette;
 struct Palette 
 {
@@ -16,7 +20,14 @@ struct Palette
 	Color Col4;
 };
 
-void rect(int32_t x, int32_t y, uint32_t width, uint32_t height);
+void setImageFrame(Image* data, uint8_t frame);
+uint8_t* imageImage(Image* data);
+uint8_t imageFrame(Image* data);
+uint8_t imageType(Image* data);
+uint16_t imageHeight(Image* data);
+uint16_t imageWidth(Image* data);
+
+void rect_offset(int32_t x, int32_t y, uint32_t width, uint32_t height);
 void setPalette(Palette pal);
 uint32_t getRandomSeed();
 void randomSeed(unsigned int seed);

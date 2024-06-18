@@ -30,7 +30,7 @@ uint8_t setBit8(uint8_t val, uint8_t bit)
 {
     if (bit > 7)
         return val;
-    return val | (1U << bit);
+    return (uint8_t)(val | (1U << bit));
 }
 
 uint8_t checkBit8(uint8_t val, uint8_t bit)

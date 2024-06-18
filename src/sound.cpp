@@ -105,39 +105,13 @@
 #define NOTE_DS8 4978
 
 constexpr uint8_t sfxSustain = 100 * 5 / frameRate;
-uint8_t music_note, music_tempo, music_loop, prev_music, music_sustain_note, music_on, sound_on, sfx_sustain;
+uint8_t music_note, music_loop, prev_music, music_sustain_note, music_on, sound_on, sfx_sustain;
+uint16_t music_tempo;
 uint8_t sfx_setting_note, sfx_sustain_zero_set, music_sustain_zero_set, selecting_music;
-uint8_t musicArray[255];
+uint16_t musicArray[255];
 unsigned long music_length;
 
-//Here is kind of "quick'n dirty" custom music player made using solely using channel of the GB
-//The main parameters of the channel are set manually, then this table defines "notes", as in "frequencies" 
-const uint16_t music_notes_gb[11] ={
-    0, //for silence
-    NOTE_C4, //C  4
-    NOTE_CS4, //C# 4
-    NOTE_D4, //D  4
-    NOTE_DS4, //D# 4
-    NOTE_E4, //E  4
-    NOTE_DS6, //D# 6
-    NOTE_D6, //D 6
-    NOTE_E6, //E 6
-    NOTE_F6, //F 6
-    NOTE_E4, //E 4
-};
-
-//helper defines
-#define P   0
-#define C4  1
-#define C4S 2 
-#define D4  3
-#define D4S 4
-#define E4  5
-#define D6S 6
-#define D6  7
-#define E6  8
-#define F6  9
-#define F4  10
+#define NOTE_P 0
 #define PAUSE 15
 #define PAUSE2 6
 #define PAUSE3 14
@@ -145,230 +119,231 @@ const uint16_t music_notes_gb[11] ={
 
 //Here is the "partition" table. 
 //https://onlinesequencer.net/2498607
-const uint8_t music_levelsCleared[96] ={
-    D6,PAUSE4,
-    D6S,PAUSE4,
-    D6,PAUSE4,
-    P,PAUSE4,
-    D6,PAUSE4,
-    E6,PAUSE4,
-    F6,PAUSE4,
-    E6,PAUSE4,
-    E6,PAUSE4,
-    E6,PAUSE4,
-    D6,PAUSE4,
-    P,PAUSE4,
-    D6S,PAUSE4,
-    E6,PAUSE4,
-    D6S,PAUSE4,
-    P,PAUSE4,
-    E6,PAUSE4,
-    F6,PAUSE4,
-    E6,PAUSE4,
-    P,PAUSE4,
-    D6,PAUSE4,
-    D6S,PAUSE4,
-    D6,PAUSE4,
-    E6,PAUSE4,
-    E6,PAUSE4,
-    D6S,PAUSE4,
-    D6S,PAUSE4,
-    D6,PAUSE4,
-    D6,PAUSE4,
-    D6S,PAUSE4,
-    E6,PAUSE4,
-    D6S,PAUSE4,
-    P,PAUSE4,
-    E6,PAUSE4,
-    D6S,PAUSE4,
-    E6,PAUSE4,
-    D6S,PAUSE4,
-    D6S,PAUSE4,
-    E6,PAUSE4,
-    P,PAUSE4,
-    E6,PAUSE4,
-    F6,PAUSE4,
-    D6S,PAUSE4,
-    E6,PAUSE4,
-    P,PAUSE4,
-    F6,PAUSE4,
-    E6,PAUSE4,
-    F6,PAUSE4
+const uint16_t music_levelsCleared[98] ={
+    NOTE_D6,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_D6,PAUSE4,
+    NOTE_P,PAUSE4,
+    NOTE_D6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_F6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_D6,PAUSE4,
+    NOTE_P,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_P,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_F6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_P,PAUSE4,
+    NOTE_D6,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_D6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_D6,PAUSE4,
+    NOTE_D6,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_P,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_P,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_F6,PAUSE4,
+    NOTE_DS6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_P,PAUSE4,
+    NOTE_F6,PAUSE4,
+    NOTE_E6,PAUSE4,
+    NOTE_F6,PAUSE4,
+	NOTE_P, PAUSE
 };
 
 
 //https://onlinesequencer.net/2484974
-const uint8_t music_won[16] ={
-  D6S, PAUSE2,
-  D6,  PAUSE2,
-  D6S, PAUSE2,
-  E6 , PAUSE2,
-  D6S, PAUSE2,
-  E6 , PAUSE2,
-  F6 , PAUSE2 << 2,
-  P, PAUSE2  
+const uint16_t music_won[16] ={
+  NOTE_DS6, PAUSE2,
+  NOTE_D6,  PAUSE2,
+  NOTE_DS6, PAUSE2,
+  NOTE_E6 , PAUSE2,
+  NOTE_DS6, PAUSE2,
+  NOTE_E6 , PAUSE2,
+  NOTE_F6 , PAUSE2 << 2,
+  NOTE_P, PAUSE2  
 };
 
 //https://onlinesequencer.net/2485064
-const uint8_t music_game[198] ={ 
-    P, PAUSE3,
-    C4, PAUSE3,
-    C4S, PAUSE3,
-    P, PAUSE3,
-    C4, PAUSE3,
-    C4S, PAUSE3,
-    C4S, PAUSE3,
-    D4, PAUSE3,
-    P, PAUSE3,
-    D4S, PAUSE3,
-    D4, PAUSE3,
-    P, PAUSE3,
-    D4S, PAUSE3,
-    E4, PAUSE3,
-    P, PAUSE3,
-    D4S, PAUSE3,
-    E4, PAUSE3,
-    E4, PAUSE3,
-    F4, PAUSE3,
-    P, PAUSE3,
+const uint16_t music_game[198] ={ 
+    NOTE_P, PAUSE3,
+    NOTE_C4, PAUSE3,
+    NOTE_CS4, PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_C4, PAUSE3,
+    NOTE_CS4, PAUSE3,
+    NOTE_CS4, PAUSE3,
+    NOTE_D4, PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_DS4, PAUSE3,
+    NOTE_D4, PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_DS4, PAUSE3,
+    NOTE_E4, PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_DS4, PAUSE3,
+    NOTE_E4, PAUSE3,
+    NOTE_E4, PAUSE3,
+    NOTE_F4, PAUSE3,
+    NOTE_P, PAUSE3,
 
-    C4, PAUSE3,
-    C4S, PAUSE3,
-    P, PAUSE3,
-    C4, PAUSE3,
-    C4S, PAUSE3,
-    C4S, PAUSE3,
-    D4, PAUSE3,
-    P, PAUSE3,
-    D4S, PAUSE3,
-    D4, PAUSE3,
-    P, PAUSE3,
-    D4S, PAUSE3,
-    E4, PAUSE3,
-    P, PAUSE3,
-    D4S, PAUSE3,
-    E4, PAUSE3,
-    E4, PAUSE3,
-    F4, PAUSE3,
-    P, PAUSE3,
+    NOTE_C4, PAUSE3,
+    NOTE_CS4, PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_C4, PAUSE3,
+    NOTE_CS4, PAUSE3,
+    NOTE_CS4, PAUSE3,
+    NOTE_D4, PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_DS4, PAUSE3,
+    NOTE_D4, PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_DS4, PAUSE3,
+    NOTE_E4, PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_DS4, PAUSE3,
+    NOTE_E4, PAUSE3,
+    NOTE_E4, PAUSE3,
+    NOTE_F4, PAUSE3,
+    NOTE_P, PAUSE3,
 
-    D4, PAUSE3,
-    C4, PAUSE3,
-    E4, PAUSE3,
-    D4, PAUSE3,
-    P,  PAUSE3,
-    E4, PAUSE3,
-    P,  PAUSE3,
-    E4, PAUSE3,
-    D4, PAUSE3,
-    P,  PAUSE3,
-    D4S, PAUSE3,
-    D4S, PAUSE3,
-    E4, PAUSE3,
-    P, PAUSE3,
-    E4, PAUSE3,
-    D4S, PAUSE3,
-    D4, PAUSE3,
-    C4, PAUSE3,
-    D4S, PAUSE3,
-    E4,PAUSE3,
-    D4,PAUSE3,
-    P,PAUSE3,
-    D4S,PAUSE3,
-    D4,PAUSE3,
-    C4,PAUSE3,
-    P,PAUSE3,
-    D4,PAUSE3,
-    C4,PAUSE3,
-    E4,PAUSE3,
-    D4,PAUSE3,
-    P,PAUSE3,
-    E4,PAUSE3,
-    P,PAUSE3,
-    E4,PAUSE3,
-    D4,PAUSE3,
-    P,PAUSE3,
-    D4S,PAUSE3,
-    D4S,PAUSE3,
-    E4,PAUSE3,
-    P,PAUSE3,
-    E4,PAUSE3,
-    D4,PAUSE3,
-    C4,PAUSE3,
-    C4S,PAUSE3,
-    D4S,PAUSE3,
-    F4,PAUSE3,
-    E4,PAUSE3,
-    D4,PAUSE3,
-    D4S,PAUSE3,
-    D4S,PAUSE3,
-    P, PAUSE3,
-    E4,PAUSE3,
-    D4,PAUSE3,
-    D4,PAUSE3,
-    P, PAUSE3,
-    D4S,PAUSE3,
-    C4S,PAUSE3,
-    C4S,PAUSE3,
-    P, PAUSE3,
-    D4,PAUSE3
+    NOTE_D4, PAUSE3,
+    NOTE_C4, PAUSE3,
+    NOTE_E4, PAUSE3,
+    NOTE_D4, PAUSE3,
+    NOTE_P,  PAUSE3,
+    NOTE_E4, PAUSE3,
+    NOTE_P,  PAUSE3,
+    NOTE_E4, PAUSE3,
+    NOTE_D4, PAUSE3,
+    NOTE_P,  PAUSE3,
+    NOTE_DS4, PAUSE3,
+    NOTE_DS4, PAUSE3,
+    NOTE_E4, PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_E4, PAUSE3,
+    NOTE_DS4, PAUSE3,
+    NOTE_D4, PAUSE3,
+    NOTE_C4, PAUSE3,
+    NOTE_DS4, PAUSE3,
+    NOTE_E4,PAUSE3,
+    NOTE_D4,PAUSE3,
+    NOTE_P,PAUSE3,
+    NOTE_DS4,PAUSE3,
+    NOTE_D4,PAUSE3,
+    NOTE_C4,PAUSE3,
+    NOTE_P,PAUSE3,
+    NOTE_D4,PAUSE3,
+    NOTE_C4,PAUSE3,
+    NOTE_E4,PAUSE3,
+    NOTE_D4,PAUSE3,
+    NOTE_P,PAUSE3,
+    NOTE_E4,PAUSE3,
+    NOTE_P,PAUSE3,
+    NOTE_E4,PAUSE3,
+    NOTE_D4,PAUSE3,
+    NOTE_P,PAUSE3,
+    NOTE_DS4,PAUSE3,
+    NOTE_DS4,PAUSE3,
+    NOTE_E4,PAUSE3,
+    NOTE_P,PAUSE3,
+    NOTE_E4,PAUSE3,
+    NOTE_D4,PAUSE3,
+    NOTE_C4,PAUSE3,
+    NOTE_CS4,PAUSE3,
+    NOTE_DS4,PAUSE3,
+    NOTE_F4,PAUSE3,
+    NOTE_E4,PAUSE3,
+    NOTE_D4,PAUSE3,
+    NOTE_DS4,PAUSE3,
+    NOTE_DS4,PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_E4,PAUSE3,
+    NOTE_D4,PAUSE3,
+    NOTE_D4,PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_DS4,PAUSE3,
+    NOTE_CS4,PAUSE3,
+    NOTE_CS4,PAUSE3,
+    NOTE_P, PAUSE3,
+    NOTE_D4,PAUSE3
 };
 
 //https://onlinesequencer.net/2484977
-const uint8_t music_intro[98] = {
-    C4,  PAUSE,
-    C4,  PAUSE * 2,
-    D4,  PAUSE,
-    D4S, PAUSE,
-    C4,  PAUSE,
-    P,   PAUSE * 8,
+const uint16_t music_intro[98] = {
+    NOTE_C4,  PAUSE,
+    NOTE_C4,  PAUSE * 2,
+    NOTE_D4,  PAUSE,
+    NOTE_DS4, PAUSE,
+    NOTE_C4,  PAUSE,
+    NOTE_P,   PAUSE * 8,
     
-    C4,  PAUSE,
-    C4,  PAUSE * 2,
-    D4,  PAUSE,
-    D4S, PAUSE,
-    C4,  PAUSE,
-    D4,  PAUSE,
-    C4,  PAUSE,
-    C4S, PAUSE,
-    P,   PAUSE * 4,
+    NOTE_C4,  PAUSE,
+    NOTE_C4,  PAUSE * 2,
+    NOTE_D4,  PAUSE,
+    NOTE_DS4, PAUSE,
+    NOTE_C4,  PAUSE,
+    NOTE_D4,  PAUSE,
+    NOTE_C4,  PAUSE,
+    NOTE_CS4, PAUSE,
+    NOTE_P,   PAUSE * 4,
 
-    C4,  PAUSE,
-    C4,  PAUSE * 2,
-    D4,  PAUSE,
-    D4S, PAUSE,
-    C4,  PAUSE,
-    P,   PAUSE * 8,
+    NOTE_C4,  PAUSE,
+    NOTE_C4,  PAUSE * 2,
+    NOTE_D4,  PAUSE,
+    NOTE_DS4, PAUSE,
+    NOTE_C4,  PAUSE,
+    NOTE_P,   PAUSE * 8,
     
-    C4,  PAUSE,
-    C4,  PAUSE * 2,
-    D4,  PAUSE,
-    D4S, PAUSE,
-    C4,  PAUSE,
-    D4,  PAUSE,
-    C4,  PAUSE,
-    C4S, PAUSE,
-    P,   PAUSE * 4,
+    NOTE_C4,  PAUSE,
+    NOTE_C4,  PAUSE * 2,
+    NOTE_D4,  PAUSE,
+    NOTE_DS4, PAUSE,
+    NOTE_C4,  PAUSE,
+    NOTE_D4,  PAUSE,
+    NOTE_C4,  PAUSE,
+    NOTE_CS4, PAUSE,
+    NOTE_P,   PAUSE * 4,
 
-    D4,  PAUSE,
-    D4,  PAUSE, 
-    C4S, PAUSE,
-    C4,  PAUSE,
-    D4S, PAUSE,
-    C4S, PAUSE,
-    D4,  PAUSE,
-    D4S, PAUSE,
-    C4S, PAUSE,
-    D4S, PAUSE,
-    D4,  PAUSE,
-    D4,  PAUSE,
-    D4,  PAUSE,
-    E4,  PAUSE,
-    C4,  PAUSE,
-    C4S, PAUSE,
-    E4,  PAUSE,
-    D4,  PAUSE * 3,
-    P,   PAUSE * 4
+    NOTE_D4,  PAUSE,
+    NOTE_D4,  PAUSE, 
+    NOTE_CS4, PAUSE,
+    NOTE_C4,  PAUSE,
+    NOTE_DS4, PAUSE,
+    NOTE_CS4, PAUSE,
+    NOTE_D4,  PAUSE,
+    NOTE_DS4, PAUSE,
+    NOTE_CS4, PAUSE,
+    NOTE_DS4, PAUSE,
+    NOTE_D4,  PAUSE,
+    NOTE_D4,  PAUSE,
+    NOTE_D4,  PAUSE,
+    NOTE_E4,  PAUSE,
+    NOTE_C4,  PAUSE,
+    NOTE_CS4, PAUSE,
+    NOTE_E4,  PAUSE,
+    NOTE_D4,  PAUSE * 3,
+    NOTE_P,   PAUSE * 4
 };
 
 
@@ -389,7 +364,7 @@ void processSound()
     {
         if (!sfx_sustain_zero_set)
         {
-            do_tone(0, sfx_sustain, 100, TONE_PULSE2 | TONE_NOTE_MODE);
+            tone(0, sfx_sustain, 100, TONE_PULSE2 | TONE_NOTE_MODE);
             sfx_sustain_zero_set = 1;
         }
     }
@@ -411,19 +386,19 @@ void SelectMusic(uint8_t musicFile, uint8_t loop)
 		{
 			case musTitle:
 				memcpy(musicArray, music_intro, sizeof(music_intro));
-				music_length = sizeof(music_intro);
+				music_length = sizeof(music_intro) / sizeof(uint16_t);
 				break;
 			case musLevelClear:
 				memcpy(musicArray, music_won, sizeof(music_won));
-				music_length = sizeof(music_won);
+				music_length = sizeof(music_won) / sizeof(uint16_t);
 				break;
 			case musAllLevelsClear:
 				memcpy(musicArray, music_levelsCleared, sizeof(music_levelsCleared));
-				music_length = sizeof(music_levelsCleared);
+				music_length = sizeof(music_levelsCleared) / sizeof(uint16_t);
 				break;
 			case musGame:
 				memcpy(musicArray, music_game, sizeof(music_game));
-				music_length = sizeof(music_game);
+				music_length = sizeof(music_game) / sizeof(uint16_t);
 				break;
 		}
 		music_note = 0;
@@ -439,7 +414,7 @@ void playNote()
 {    
     if(music_note < music_length)
     {
-        do_tone(music_notes_gb[musicArray[music_note]], 50, 10, TONE_PULSE2);
+        tone(musicArray[music_note], 50, 75, TONE_PULSE2);
         music_sustain_note = 0;
 
         //Set the new delay to wait
@@ -453,12 +428,6 @@ void playNote()
             if(music_loop)
             {
                 music_note = 0;
-            }
-            else
-            {
-                #ifdef SEGA
-                playSegaMusTone(0);
-                #endif
             }
         }
     }
@@ -532,13 +501,13 @@ void initSound()
     sound_on = 0;
 }
 
-void playSound(uint16_t tone)
+void playSound(uint16_t freq)
 {
     if(!sound_on)
 	{
         return;
 	}
-    do_tone(tone, sfxSustain, 100, TONE_PULSE1);
+    tone(freq, sfxSustain, 100, TONE_PULSE1);
 }
 
 

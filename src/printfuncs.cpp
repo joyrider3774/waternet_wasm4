@@ -57,7 +57,7 @@ void printNumber(uint8_t ax, uint8_t ay, uint16_t aNumber, size_t maxDigits)
         if (number[buffSize - digits + c] == '\0')
             return;
         
-        set_bkg_tile_xy(ax + (maxDigits-digits) + c, ay, number[buffSize - digits + c] + 32);
+        set_bkg_tile_xy(uint32_t(ax + (maxDigits-digits) + c), ay, (uint32_t)(number[buffSize - digits + c] + 32));
     }
 }
 
@@ -66,12 +66,12 @@ void printNumber(uint8_t ax, uint8_t ay, uint16_t aNumber, size_t maxDigits)
 void printMessage(uint8_t ax, uint8_t ay, const char* amsg)
 {
     // based on input from @Pharap
-    size_t index = 0;
+    uint32_t index = 0;
     int p = 0;
     while (1)
     {
         char fChar = amsg[p++];
-        uint8_t tile = 61U;
+        uint32_t tile = 61U;
         switch (fChar)
         { 
             case '\0':
@@ -123,10 +123,10 @@ void printMessage(uint8_t ax, uint8_t ay, const char* amsg)
             
             default:
                 if ((fChar >= 'A') &&  (fChar <= 'Z'))
-                    tile = fChar + 25U;
+                    tile = ((uint32_t)fChar + 25u);
                 
                 if ((fChar >= '0') && (fChar <= '9'))
-                    tile = fChar + 32U;
+                    tile = ((uint32_t)fChar + 32u);
                 break;
         }
         set_bkg_tile_xy(ax + index, ay, tile);
@@ -139,12 +139,12 @@ void printCongratsScreen(uint8_t ax, uint8_t ay, const char* amsg)
 {
     // based on input form @Pharap
     int p = 0;
-    size_t index = 0;
+    uint32_t index = 0;
 
     while (1)
     {
         char fChar = amsg[p++];
-        uint8_t tile = 26U;
+        uint32_t tile = 26U;
         switch (fChar) 
         {
             case '\0':
@@ -152,7 +152,7 @@ void printCongratsScreen(uint8_t ax, uint8_t ay, const char* amsg)
 
             default:
                 if ((fChar >= 'A') &&  (fChar <= 'Z'))
-                    tile =  fChar - 'A';
+                    tile =  uint32_t(fChar - 'A');
                 break;
         }
         set_bkg_tile_xy(ax + index, ay, tile);

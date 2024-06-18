@@ -66,7 +66,7 @@ uint8_t drawGame(uint8_t drawWhat)
     if(drawWhat == drwLevelDone)
     {
         setBackForeGroundColor(INDEX_BLACK, INDEX_BLACK);
-        rect(((16 - 13) >> 1) * 8, ((maxBoardBgHeight >> 1) - 2) * 8, 14*8, 5*8);
+        rect_offset(((16 - 13) >> 1) * 8, ((maxBoardBgHeight >> 1) - 2) * 8, 14*8, 5*8);
 		setDrawColor( Index1, Index2, Index3, Index4);
         printMessage(((16 - 13) >> 1), (maxBoardBgHeight >> 1) - 2, "[************]");
         printMessage(((16 - 13) >> 1), (maxBoardBgHeight >> 1) - 1, "| LEVEL DONE +");
@@ -78,7 +78,7 @@ uint8_t drawGame(uint8_t drawWhat)
     if(drawWhat == drwPause)
     {
         setBackForeGroundColor(INDEX_BLACK, INDEX_BLACK);
-        rect(0, ((maxBoardBgHeight >> 1) - 3) * 8, 16*8, 6*8);
+        rect_offset(0, ((maxBoardBgHeight >> 1) - 3) * 8, 16*8, 6*8);
 		setDrawColor( Index1, Index2, Index3, Index4);
         printMessage(0, (maxBoardBgHeight >> 1) - 3, "[**************]");
         printMessage(0, (maxBoardBgHeight >> 1) - 2, "|PLEASE CONFIRM+"); 
@@ -99,7 +99,7 @@ void initGame()
     setBlockTilesAsBackground();
     //set sprite for selector / cursor
     initCursors();
-    setCursorPos(0, boardX + selectionX, boardY + selectionY);
+    setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
     showCursors();
     levelDoneFrames = 0;
     levelDone = 0;
@@ -123,7 +123,7 @@ void doUnPause()
     paused = 0;
     setMusicOn(wasMusicOn);
     setSoundOn(wasSoundOn);
-    setCursorPos(0, boardX + selectionX, boardY + selectionY);
+    setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
     showCursors();
     nextDrawWhat = drwNone;
 }
@@ -163,7 +163,7 @@ void game()
             else
             //set to border on top
                 selectionY = -posAdd;
-            setCursorPos(0, boardX + selectionX, boardY + selectionY);
+            setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
         }
     } 
 
@@ -178,7 +178,7 @@ void game()
             else
             //set to border on bottom
                 selectionY = boardHeight -1 +posAdd;
-            setCursorPos(0, boardX + selectionX, boardY + selectionY);
+            setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
         }
     }
 
@@ -193,7 +193,7 @@ void game()
             else
             //set to border on left
                 selectionX = -posAdd;
-            setCursorPos(0, boardX + selectionX, boardY + selectionY);
+            setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
         }
     }
 
@@ -208,7 +208,7 @@ void game()
             //set to border on right
             else
                 selectionX = boardWidth -1 + posAdd;
-            setCursorPos(0, boardX + selectionX, boardY + selectionY);
+            setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
         }
     }
 
@@ -309,7 +309,7 @@ void game()
                         initLevel(randomSeedGame);
                         SelectMusic(musGame, 1);
                         //show cursor again (it's actually to early but i'm not fixing that)
-                        setCursorPos(0, boardX + selectionX, boardY + selectionY);
+                        setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
                         showCursors();
                         nextDrawWhat = drwNone;
                     }
@@ -323,7 +323,7 @@ void game()
                             initLevel(randomSeedGame);
                             SelectMusic(musGame, 1);
                             //show cursor again (it's actually to early but i'm not fixing that)
-                            setCursorPos(0, boardX + selectionX, boardY + selectionY);
+                            setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
                             showCursors();
                             nextDrawWhat = drwNone;
                         }

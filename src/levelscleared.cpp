@@ -13,7 +13,7 @@
 void initLevelsCleared()
 {
     setPaletteTitle();
-    set_bkg_data(&congratstiles_8x8);
+    set_bkg_data(congratstiles_8x8);
     SelectMusic(musAllLevelsClear, 1);
 }
 
@@ -26,7 +26,7 @@ void levelsCleared()
     }
 
  	clear(INDEX_BLACK);
-    drawImage(0, 0, &congratsscreen_8x8);
+    drawImage(0, 0, congratsscreen_8x8);
     switch (difficulty)
     {
         case diffVeryEasy:
