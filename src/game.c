@@ -10,16 +10,16 @@
 #include "savestate.h"
 #include "palettes.h"
 
-uint8_t paused, wasMusicOn, wasSoundOn,DrawLevelDoneBit, nextDrawWhat, levelDoneFrames;
-constexpr uint8_t drwNone = 0;
-constexpr uint8_t drwMoves = 1;
-constexpr uint8_t drwUi = 2;
-constexpr uint8_t drwLevel = 4;
-constexpr uint8_t drwLevelDone = 8;
-constexpr uint8_t drwPause = 16;
-constexpr uint8_t drwPartialLevel = 32;
-constexpr uint8_t maxLevelDoneFrames = 16 * frameRate / 15;
+#define drwNone 0
+#define drwMoves 1
+#define drwUi 2
+#define drwLevel 4
+#define drwLevelDone 8
+#define drwPause 16
+#define drwPartialLevel 32
+#define maxLevelDoneFrames (16 * frameRate / 15)
 
+uint8_t paused, wasMusicOn, wasSoundOn,DrawLevelDoneBit, nextDrawWhat, levelDoneFrames;
 
 uint8_t drawGame(uint8_t drawWhat)
 {
@@ -59,7 +59,7 @@ uint8_t drawGame(uint8_t drawWhat)
 
 	printNumber(maxBoardBgWidth + 1, 3, moves, 5);
 	setDrawColor( Index1, Index2, Index3, Index4);
-	drawLevel();
+	drawLevelFull();
 	drawCursors();
 
     

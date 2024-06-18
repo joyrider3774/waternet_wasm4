@@ -7,9 +7,11 @@
 
 #include "titlescreenmap.h"
 
+#define frameDelay ((uint8_t)(frameRate*1.5))
+
 uint16_t frames;
 float titlePosY;
-constexpr uint8_t frameDelay = (uint8_t)(frameRate*1.5);
+
 
 void initIntro()
 {

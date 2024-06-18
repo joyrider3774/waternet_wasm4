@@ -104,7 +104,8 @@
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
 
-constexpr uint8_t sfxSustain = 100 * 5 / frameRate;
+#define sfxSustain (100 * 5 / frameRate)
+
 uint8_t music_note, music_loop, prev_music, music_sustain_note, music_on, sound_on, sfx_sustain;
 uint16_t music_tempo;
 uint8_t sfx_setting_note, sfx_sustain_zero_set, music_sustain_zero_set, selecting_music;

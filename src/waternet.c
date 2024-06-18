@@ -1,6 +1,5 @@
 
 #include <stdint.h>
-#include <cinttypes>
 #include "wasm4.h"
 #include "palettes.h"
 #include "commonvars.h"

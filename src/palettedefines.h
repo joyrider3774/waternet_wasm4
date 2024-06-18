@@ -3,7 +3,7 @@
 
 #include "wasm4.h"
 #include "helperfuncs.h"
-constexpr uint8_t  maxColorSelections = 5;
+#define maxColorSelections 5
 
 extern Palette GB_PALETTE;
 extern Palette BLACK_WHITE_PALETTE_TITLE;

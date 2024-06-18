@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include "wasm4.h"
@@ -7,7 +8,7 @@
 
 uint32_t frames_drawn = 0;
 
-Image* currentTiles = nullptr;
+Image* currentTiles = NULL;
 
 uint16_t imageWidth(Image* data)
 {
@@ -141,7 +142,7 @@ void drawImage( uint32_t x , uint32_t y, Image *img)
 	blitSub(imageImage(img), (int32_t)x, (int32_t)(y + SCREEN_Y_OFFSET), imageWidth(img), imageHeight(img), 0, imageHeight(img) * imageFrame(img), imageWidth(img), imageType(img));
 }
 
-uint8_t random(uint8_t val)
+uint8_t random_u8(uint8_t val)
 {
 	return (uint8_t)(rand() % val);
 }

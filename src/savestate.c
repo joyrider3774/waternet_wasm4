@@ -4,15 +4,15 @@
 #include "commonvars.h"
 #include "palettes.h"
 
-constexpr uint8_t soundOptionBit = 0U;
-constexpr uint8_t musicOptionBit = 1U; 
-constexpr uint8_t colorInverseBit = 2U;
+#define soundOptionBit 0U
+#define musicOptionBit 1U 
+#define colorInverseBit 2U
 
 typedef struct SaveData SaveData;
 struct SaveData {
 	uint32_t levelLocksPacked[3];
-	uint8_t options = 0; //bit 0 sound on/off, bit 1 music on/off
-	uint8_t activeColor = 0; 
+	uint8_t options; //bit 0 sound on/off, bit 1 music on/off
+	uint8_t activeColor; 
 };
 
 SaveData Save;

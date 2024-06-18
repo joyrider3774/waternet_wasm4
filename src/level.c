@@ -8,7 +8,7 @@
 #define mmin(val1,val2) ((val1 < val2)? val1:val2)
 #define mmax(val1,val2) ((val1 > val2)? val1:val2)
 
-void drawLevel()
+void drawLevelFull()
 {
     drawLevel(0,0,maxBoardBgWidth, maxBoardBgHeight);
 }
@@ -191,7 +191,7 @@ void rotateBlock(uint8_t aTile)
 
 void shuffleSlide(uint8_t aTile)
 {
-    uint8_t rnd = random(4);
+    uint8_t rnd = random_u8(4);
     switch (rnd)
     {
         case 0:
@@ -211,7 +211,7 @@ void shuffleSlide(uint8_t aTile)
 
 void shuffleRotate(uint8_t aTile)
 {
-    uint8_t rnd = random(4);
+    uint8_t rnd = random_u8(4);
     for (uint8_t i = 0; i < rnd; i++)
         rotateBlock(aTile);
 }
@@ -234,7 +234,7 @@ void shuffleLevel()
                 j+=2;
                 break;
             case gmRotateSlide:
-                rnd = random(2);
+                rnd = random_u8(2);
                 if(rnd == 0)
                 {
                     shuffleSlide(j);
@@ -433,7 +433,7 @@ void generateLevel()
                 continue;
                 break;
             default:
-                rnd = random(neighboursFound);
+                rnd = random_u8(neighboursFound);
                 break;
         }
         selectedNeighbour = neighbours[rnd];      
@@ -513,7 +513,8 @@ void initLevel(uint32_t aRandomSeed)
         randomSeed(aRandomSeed); 
 
     maxLevel = levelCount;
-    //set boardsize and max level based on difficulty
+    uint8_t rnd;
+	//set boardsize and max level based on difficulty
     switch (difficulty)
     {
         case diffVeryEasy:
@@ -537,9 +538,9 @@ void initLevel(uint32_t aRandomSeed)
             boardHeight = 14U;
             break;    
         case diffRandom:
-            uint8_t rnd = random(255);
+            rnd = random_u8(255);
             boardWidth = 6 + (rnd % (maxBoardWidth - 6 + 1)); //5 is smallest level width from very easy
-            rnd = random(255);
+            rnd = random_u8(255);
             boardHeight = 8 + (rnd % (maxBoardHeight - 8 + 1)); //5 is smallest level height from very easy
             maxLevel = 0; //special value with random
             break;

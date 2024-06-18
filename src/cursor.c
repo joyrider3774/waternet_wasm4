@@ -5,10 +5,10 @@
 #include "helperfuncs.h"
 #include "selectortiles.h"
 
-constexpr uint8_t maxCursors = 4;
-constexpr uint8_t maxCursorFrameCount = (uint8_t)(10 * frameRate / 60);
-constexpr uint8_t cursorAnimCount = 2; //blink on & off
-constexpr uint8_t cursorNumTiles = maxCursors * 8; //for the max 4 cursors shown at once (on help screens) 
+#define maxCursors 4
+#define maxCursorFrameCount ((uint8_t)(10 * frameRate / 60))
+#define cursorAnimCount 2 //blink on & off
+#define cursorNumTiles (maxCursors * 8) //for the max 4 cursors shown at once (on help screens) 
 
 uint8_t cursorFrameCount, cursorFrame, showCursor;
 uint8_t spritePos[cursorNumTiles][2];

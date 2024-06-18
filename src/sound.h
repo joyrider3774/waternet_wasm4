@@ -3,10 +3,10 @@
 
 #include <stdint.h>
 
-constexpr uint8_t musGame = 1;
-constexpr uint8_t musTitle = 2;
-constexpr uint8_t musLevelClear = 3;
-constexpr uint8_t musAllLevelsClear = 4;
+#define musGame 1
+#define musTitle 2
+#define musLevelClear 3
+#define musAllLevelsClear 4
 
 void initSound();
 void SelectMusic(uint8_t musicFile, uint8_t loop);

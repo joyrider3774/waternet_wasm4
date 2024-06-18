@@ -33,7 +33,7 @@ void drawLevelSelect()
     else
         printMessage(maxBoardBgWidth , 2 , "OPEN");
     
-    drawLevel();
+    drawLevelFull();
 }
 
 

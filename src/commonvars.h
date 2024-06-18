@@ -3,87 +3,87 @@
 
 #include <stdint.h>
 #include "wasm4.h"
-constexpr uint8_t INDEX_BLACK = 4U;
-constexpr uint8_t maxBoardWidth = 12U;
-constexpr uint8_t  maxBoardHeight = 14U;
+#define INDEX_BLACK 4U
+#define maxBoardWidth 12U
+#define maxBoardHeight 14U
 
-constexpr int8_t  maxBoardBgWidth = 14U;
-constexpr int8_t  maxBoardBgHeight = 16U;
+#define maxBoardBgWidth 14U
+#define maxBoardBgHeight 16U
 
-constexpr uint8_t  maxBoardSize = maxBoardWidth * maxBoardHeight;
+#define maxBoardSize (maxBoardWidth * maxBoardHeight)
 
-constexpr uint8_t  tileSize = 8;
+#define tileSize 8
 
-constexpr uint8_t  gsGame = 0;
-constexpr uint8_t  gsTitle = 1;
-constexpr uint8_t  gsLevelSelect = 2;
-constexpr uint8_t  gsLevelsCleared = 3;
-constexpr uint8_t  gsHelpRotate = 4;
-constexpr uint8_t  gsHelpRotate2 = 5;
-constexpr uint8_t  gsHelpRotateSlide = 6;
-constexpr uint8_t  gsHelpRotateSlide2 = 7;
-constexpr uint8_t  gsHelpSlide = 8;
-constexpr uint8_t  gsHelpSlide2 = 9;
-constexpr uint8_t  gsIntro = 10;
+#define gsGame 0
+#define gsTitle 1
+#define gsLevelSelect 2
+#define gsLevelsCleared 3
+#define gsHelpRotate 4
+#define gsHelpRotate2 5
+#define gsHelpRotateSlide 6
+#define gsHelpRotateSlide2 7
+#define gsHelpSlide 8
+#define gsHelpSlide2 9
+#define gsIntro 10
 
-constexpr uint8_t  gsInitDiff = 50;
+#define gsInitDiff 50
 
-constexpr uint8_t  gsInitGame = gsInitDiff + gsGame;
-constexpr uint8_t  gsInitTitle = gsInitDiff + gsTitle;
-constexpr uint8_t  gsInitLevelSelect = gsInitDiff + gsLevelSelect;
-constexpr uint8_t  gsInitLevelsCleared = gsInitDiff + gsLevelsCleared;
-constexpr uint8_t  gsInitHelpRotate = gsInitDiff + gsHelpRotate;
-constexpr uint8_t  gsInitHelpRotate2 = gsInitDiff + gsHelpRotate2;
-constexpr uint8_t  gsInitHelpRotateSlide = gsInitDiff + gsHelpRotateSlide;
-constexpr uint8_t  gsInitHelpRotateSlide2 = gsInitDiff + gsHelpRotateSlide2;
-constexpr uint8_t  gsInitHelpSlide = gsInitDiff + gsHelpSlide;
-constexpr uint8_t  gsInitHelpSlide2 = gsInitDiff + gsHelpSlide2;
-constexpr uint8_t  gsInitIntro = gsInitDiff + gsIntro;
+#define gsInitGame (gsInitDiff + gsGame)
+#define gsInitTitle (gsInitDiff + gsTitle)
+#define gsInitLevelSelect (gsInitDiff + gsLevelSelect)
+#define gsInitLevelsCleared (gsInitDiff + gsLevelsCleared)
+#define gsInitHelpRotate (gsInitDiff + gsHelpRotate)
+#define gsInitHelpRotate2 (gsInitDiff + gsHelpRotate2)
+#define gsInitHelpRotateSlide (gsInitDiff + gsHelpRotateSlide)
+#define gsInitHelpRotateSlide2 (gsInitDiff + gsHelpRotateSlide2)
+#define gsInitHelpSlide (gsInitDiff + gsHelpSlide)
+#define gsInitHelpSlide2 (gsInitDiff + gsHelpSlide2)
+#define gsInitIntro (gsInitDiff + gsIntro)
 
 
-constexpr uint8_t  diffVeryEasy = 0;
-constexpr uint8_t  diffEasy = 1;
-constexpr uint8_t  diffNormal = 2;
-constexpr uint8_t  diffHard = 3;
-constexpr uint8_t  diffVeryHard = 4;
-constexpr uint8_t  diffRandom = 5;
-constexpr uint8_t  diffCount = 6;
+#define diffVeryEasy 0
+#define diffEasy 1
+#define diffNormal 2
+#define diffHard 3
+#define diffVeryHard 4
+#define diffRandom 5
+#define diffCount 6
 
-constexpr uint8_t  gmRotate = 0;
-constexpr uint8_t  gmSlide = 1;
-constexpr uint8_t  gmRotateSlide = 2;
-constexpr uint8_t  gmCount = 3;
+#define gmRotate 0
+#define gmSlide 1
+#define gmRotateSlide 2
+#define gmCount 3
 
-constexpr uint8_t  mmStartGame = 0;
-constexpr uint8_t  mmHelp = 1;
-constexpr uint8_t  mmOptions = 2;
-constexpr uint8_t  mmCredits = 3;
-constexpr uint8_t  mmCount = 4;
+#define mmStartGame 0
+#define mmHelp 1
+#define mmOptions 2
+#define mmCredits 3
+#define mmCount 4
 
-constexpr uint8_t  opMusic = 0;
-constexpr uint8_t  opSound = 1;
-constexpr uint8_t  opColor = 2;
-constexpr uint8_t  opColorInvert = 3;
-constexpr uint8_t  opCount = 4;
+#define opMusic 0
+#define opSound 1
+#define opColor 2
+#define opColorInvert 3
+#define opCount 4
 
-constexpr uint8_t  tsMainMenu = 0;
-constexpr uint8_t  tsGameMode = 1;
-constexpr uint8_t  tsDifficulty = 2;
-constexpr uint8_t  tsOptions = 3;
-constexpr uint8_t  tsCredits = 4;
+#define tsMainMenu 0
+#define tsGameMode 1
+#define tsDifficulty 2
+#define tsOptions 3
+#define tsCredits 4
 
-constexpr uint8_t  levelCount = 25;
+#define levelCount 25
 
-constexpr uint8_t  arrowDown = 122;
-constexpr uint8_t  arrowUp = 120;
-constexpr uint8_t  arrowLeft = 123;
-constexpr uint8_t  arrowRight = 121;
-constexpr uint8_t  leftMenu = 118;
+#define arrowDown 122
+#define arrowUp 120
+#define arrowLeft 123
+#define arrowRight 121
+#define leftMenu 118
 
-constexpr uint8_t  frameRate = 60;
-constexpr uint32_t  SCREEN_WIDTH = 160;
-constexpr uint32_t  SCREEN_HEIGHT = 128;
-constexpr uint32_t  SCREEN_Y_OFFSET = 16;
+#define frameRate 60
+#define SCREEN_WIDTH 160
+#define SCREEN_HEIGHT 128
+#define SCREEN_Y_OFFSET 16
 
 extern uint8_t startPos, menuPos, 
         maxLevel, selectedLevel, boardX, boardY, difficulty, 

@@ -8,16 +8,12 @@
 // function provided by @Pharap
 // If the array is not big enough,
 // this will cause an error message at compile time.
-template<size_t size>
-size_t formatInteger(char (&array)[size], uint16_t integer )
+size_t formatInteger(char* array, uint16_t integer )
 {
-    constexpr size_t maxDigits = 10; 
-    constexpr size_t maxCharacters = (maxDigits + 1);
+    size_t maxDigits = 10; 
+    size_t maxCharacters = (maxDigits + 1);
 
-    // Check the array size at compile time
-    static_assert(size >= maxCharacters, "array is too small");
-
-    constexpr size_t lastIndex = (maxCharacters - 1);
+    size_t lastIndex = (maxCharacters - 1);
 
     array[lastIndex] = '\0';
 
@@ -46,7 +42,7 @@ size_t formatInteger(char (&array)[size], uint16_t integer )
 //print a number on levelselect or game screen
 void printNumber(uint8_t ax, uint8_t ay, uint16_t aNumber, size_t maxDigits)
 {
-    constexpr size_t buffSize = 10; 
+    size_t buffSize = 10; 
     char number[buffSize + 1];
     size_t digits = formatInteger(number, aNumber);
     size_t maxFor = digits;
@@ -57,7 +53,7 @@ void printNumber(uint8_t ax, uint8_t ay, uint16_t aNumber, size_t maxDigits)
         if (number[buffSize - digits + c] == '\0')
             return;
         
-        set_bkg_tile_xy(uint32_t(ax + (maxDigits-digits) + c), ay, (uint32_t)(number[buffSize - digits + c] + 32));
+        set_bkg_tile_xy((uint32_t)(ax + (maxDigits-digits) + c), ay, (uint32_t)(number[buffSize - digits + c] + 32));
     }
 }
 
@@ -152,7 +148,7 @@ void printCongratsScreen(uint8_t ax, uint8_t ay, const char* amsg)
 
             default:
                 if ((fChar >= 'A') &&  (fChar <= 'Z'))
-                    tile =  uint32_t(fChar - 'A');
+                    tile =  (uint32_t)(fChar - 'A');
                 break;
         }
         set_bkg_tile_xy(ax + index, ay, tile);

@@ -195,7 +195,8 @@ void titleScreen()
     if (buttonReleased(BUTTON_1))
     {
         playMenuAcknowlege();
-        switch(mainMenu)
+        uint8_t i;
+		switch(mainMenu)
         {
             case mmOptions:
                 if(titleStep != tsOptions)
@@ -219,7 +220,7 @@ void titleScreen()
                             setInverseColorSaveState(getPalInverse());
                             break;
                         case opColor:
-                            uint8_t i = getPalIndex();
+                            i = getPalIndex();
                             if (i < getMaxPalettes())
                                 i++;
                             else
