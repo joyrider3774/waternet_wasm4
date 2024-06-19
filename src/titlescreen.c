@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <string.h>
 #include "wasm4.h"
 
 #include "fulltitlescreenmap.h"
@@ -9,6 +10,147 @@
 #include "savestate.h"
 #include "level.h"
 #include "palettes.h"
+
+
+bool setMouseSelection()
+{
+	if (!mouseMovedAtleastOnce())
+		return false;
+	
+	switch(titleStep)
+	{
+		case tsMainMenu:
+			if ((*MOUSE_X >= 7*8) && (*MOUSE_X < (7 + 9) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 10 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 11*8))
+			{
+				if(mouseMoved())
+					mainMenu = mmStartGame;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 7*8) && (*MOUSE_X < (7 + 5) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 11 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 12*8))
+			{
+				if(mouseMoved())
+					mainMenu = mmHelp;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 7*8) && (*MOUSE_X < (7 + 7) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 12 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 13*8))
+			{
+				if(mouseMoved())
+					mainMenu = mmOptions;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 7*8) && (*MOUSE_X < (7 + 7) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 13 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 14*8))
+			{
+				if(mouseMoved())
+					mainMenu = mmCredits;
+				return true;
+			}
+			break;
+
+		case tsDifficulty:
+			if ((*MOUSE_X >= 6*8) && (*MOUSE_X < (6 + 9) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 8 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 9*8))
+			{
+				if(mouseMoved())
+					difficulty = diffVeryEasy;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 6*8) && (*MOUSE_X < (6 + 4) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 9 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 10*8))
+			{
+				if(mouseMoved())
+					difficulty = diffEasy;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 6*8) && (*MOUSE_X < (6 + 6) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 10 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 11*8))
+			{
+				if(mouseMoved())
+					difficulty = diffNormal;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 6*8) && (*MOUSE_X < (6 + 4) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 11 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 12*8))
+			{
+				if(mouseMoved())
+					difficulty = diffHard;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 6*8) && (*MOUSE_X < (6 + 9) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 12 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 13*8))
+			{
+				if(mouseMoved())
+					difficulty = diffVeryHard;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 6*8) && (*MOUSE_X < (6 + 6) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 13 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 14*8))
+			{
+				if(mouseMoved())
+					difficulty = diffRandom;
+				return true;
+			}
+			break;
+		case tsGameMode:
+        	if ((*MOUSE_X >= 7*8) && (*MOUSE_X < (7 + 6) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 10 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 11*8))
+			{
+				if(mouseMoved())
+					gameMode = gmRotate;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 7*8) && (*MOUSE_X < (7 + 5) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 11 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 12*8))
+			{
+				if(mouseMoved())
+					gameMode = gmSlide;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 7*8) && (*MOUSE_X < (7 + 6) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 12 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 13*8))
+			{
+				if(mouseMoved())
+					gameMode = gmRotateSlide;
+				return true;
+			}
+			break;
+		case tsCredits:
+			return mouseInGameBounds();
+			break;
+		case tsOptions:
+			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (7 + 9) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 10 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 11*8))
+			{
+				if(mouseMoved())
+					option = opMusic;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (7 + 9) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 11 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 12*8))
+			{
+				if(mouseMoved())
+					option = opSound;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (7 + ((int16_t)strlen(getPaletteName()))) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 12 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 13*8))
+			{
+				if(mouseMoved())
+					option = opColor;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (7 + 10) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 13 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 14*8))
+			{
+				if(mouseMoved())
+					option = opColorInvert;
+				return true;
+			}
+			break;
+		default:
+			break; 
+	}
+	return false;      
+}
 
 void drawTitleScreen()
 {
@@ -102,7 +244,7 @@ void titleScreen()
         initTitleScreen();
         gameState -= gsInitDiff;
     }
-    
+
     drawTitleScreen();
 
     if (buttonReleased(BUTTON_UP))
@@ -175,25 +317,33 @@ void titleScreen()
         }
     }
 
-    if (buttonReleased(BUTTON_2))
+    if (buttonReleased(BUTTON_2) || (!anyButtonReleased() && mouseButtonReleased(MOUSE_RIGHT) && mouseInGameBounds()))
     {
+
         switch (titleStep)
         {
             case tsOptions:
             case tsCredits:
-                titleStep = tsMainMenu;
+        		if(!buttonReleased(BUTTON_2))
+					resetPrevMousePos();
+		        titleStep = tsMainMenu;
                 playMenuBackSound();
                 break;
             case tsGameMode:
             case tsDifficulty:
-                titleStep--;
+				if(!buttonReleased(BUTTON_2))
+					resetPrevMousePos();
+				titleStep--;
                 playMenuBackSound();
                 break;
         }
     }
+    bool mouseok = setMouseSelection();
 
-    if (buttonReleased(BUTTON_1))
+    if (buttonReleased(BUTTON_1) || (!anyButtonReleased() && mouseButtonReleased(MOUSE_LEFT) && mouseok))
     {
+		if(!buttonReleased(BUTTON_1))
+			resetPrevMousePos();
         playMenuAcknowlege();
         uint8_t i;
 		switch(mainMenu)

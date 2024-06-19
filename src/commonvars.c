@@ -7,7 +7,7 @@ uint8_t startPos, menuPos,
         maxLevel, selectedLevel, boardX, boardY, difficulty, 
         gameState, boardWidth, boardHeight, boardSize,
         levelDone, titleStep, gameMode, posAdd, 
-        mainMenu, option, PREVGAMEPAD1;
+        mainMenu, option;
  
 int16_t selectionX, selectionY;
 uint16_t moves;

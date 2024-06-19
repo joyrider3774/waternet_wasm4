@@ -89,7 +89,7 @@ extern uint8_t startPos, menuPos,
         maxLevel, selectedLevel, boardX, boardY, difficulty, 
         gameState, boardWidth, boardHeight, boardSize,
         levelDone, titleStep, gameMode, posAdd, 
-        mainMenu, option, PREVGAMEPAD1;
+        mainMenu, option;
         
 extern int16_t selectionX, selectionY;
 extern uint16_t moves;

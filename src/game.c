@@ -19,7 +19,8 @@
 #define drwPartialLevel 32
 #define maxLevelDoneFrames (16 * frameRate / 15)
 
-uint8_t paused, wasMusicOn, wasSoundOn,DrawLevelDoneBit, nextDrawWhat, levelDoneFrames;
+uint8_t paused, wasMusicOn, wasSoundOn,DrawLevelDoneBit, nextDrawWhat, levelDoneFrames, justunpaused;
+int16_t PrevMousePlayfieldX, PrevMousePlayfieldY, MousePlayfieldX, MousePlayfieldY;
 
 uint8_t drawGame(uint8_t drawWhat)
 {
@@ -50,8 +51,8 @@ uint8_t drawGame(uint8_t drawWhat)
 	}
 
 	//B:BACK
-	printMessage(maxBoardBgWidth, 6, "b:");
-	printMessage(maxBoardBgWidth, 7, "BACK");
+	printMessage(maxBoardBgWidth, 7, "b:");
+	printMessage(maxBoardBgWidth, 8, "BACK");
 
 	//MOVES:
 	printMessage(maxBoardBgWidth, 2, "MOVES:");
@@ -99,7 +100,13 @@ void initGame()
     setBlockTilesAsBackground();
     //set sprite for selector / cursor
     initCursors();
-    setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
+	MousePlayfieldX = boardX + selectionX;
+	MousePlayfieldY = boardY + selectionY;
+	PrevMousePlayfieldX = MousePlayfieldX;
+	PrevMousePlayfieldY = MousePlayfieldY;
+	
+    setCursorPos(0, (uint8_t)(MousePlayfieldX), (uint8_t)(MousePlayfieldY));
+	
     showCursors();
     levelDoneFrames = 0;
     levelDone = 0;
@@ -126,6 +133,29 @@ void doUnPause()
     setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
     showCursors();
     nextDrawWhat = drwNone;
+	justunpaused = 1;
+}
+
+void goBackPaused()
+{
+	//need to enable early again to play backsound
+	//normally unpause does it but we only unpause
+	//after fade
+	setSoundOn(wasSoundOn);
+	hideCursors();
+	playMenuBackSound();
+	gameState = gsInitLevelSelect;
+	doUnPause();
+	//unpause sets cursor visible !
+	hideCursors();
+	//need to reset the level to initial state when going back to level selector
+	//could not find a better way unfortunatly
+	//also we do not want to reset the randomseed used for random level generating
+	//or a new level would have been created when going back we only want the level
+	//with random to change when pressing left and right in the level selector
+	//this way it stays consistent with the normal levels
+	//and the player can replay the level if he wants to
+	initLevel(randomSeedGame);
 }
 
 void game()
@@ -212,132 +242,167 @@ void game()
         }
     }
 
-    if (buttonReleased(BUTTON_1))
+	MousePlayfieldX = (*MOUSE_X / tileSize) - boardX;
+	MousePlayfieldY = ((*MOUSE_Y - SCREEN_Y_OFFSET) / tileSize) - boardY;
+	if((MousePlayfieldX != PrevMousePlayfieldX) || (MousePlayfieldY != PrevMousePlayfieldY))
+	{
+		PrevMousePlayfieldX = MousePlayfieldX;
+		PrevMousePlayfieldY = MousePlayfieldY;
+		if ((MousePlayfieldX >= -posAdd) && (MousePlayfieldX < boardWidth + posAdd) && 
+			(MousePlayfieldY >= -posAdd) && (MousePlayfieldY < boardHeight + posAdd))
+			{
+				selectionX = MousePlayfieldX;
+				selectionY = MousePlayfieldY;
+				setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
+			}
+	}
+
+    if (buttonReleased(BUTTON_1) || (!anyButtonReleased() && mouseButtonReleased(MOUSE_LEFT) && mouseInGameBounds()))
     {
         if(paused)
         {
-            doUnPause();
-            playMenuAcknowlege();
+			//in case we click with left mouse button on the quit text
+			if((!(buttonReleased(BUTTON_1)) && 
+				(*MOUSE_X >= 4 * 8) && (*MOUSE_X < ((4+9)*8) && 
+				(*MOUSE_Y >= SCREEN_Y_OFFSET + (((int16_t)maxBoardBgHeight >> 1) +1)* 8 ) && (*MOUSE_Y < SCREEN_Y_OFFSET + (((int16_t)maxBoardBgHeight >> 1) +2)* 8 ))))
+			{
+				goBackPaused();
+			}
+			else
+			{
+            	doUnPause();
+            	playMenuAcknowlege();
+			}
         }
         else
         {
-            if(!levelDone)
-            {
-                if ((selectionX > -1) && (selectionX < boardWidth) &&
-                    (selectionY > -1) && (selectionY < boardHeight))
-                {   
-                    if (gameMode != gmSlide)
-                    {
-                        rotateBlock((uint8_t)selectionX + ((uint8_t)selectionY * boardWidth));
-                        moves++;
-                        updateConnected();
-                        playGameAction();
-                    }
-                    else
-                    {
-                        playErrorSound();
-                    }
-                }
-                else
-                {
-                    if ((selectionX > -1) && (selectionX < boardWidth))
-                    {
-                        if (selectionY == -1)
-                        {
-                            moveBlockDown((uint8_t)selectionX + ((uint8_t)(selectionY+1) * boardWidth));
-                            moves++;
-                            updateConnected();
-                            playGameAction();
-                        }
-                        else
-                        {
-                            if (selectionY == boardHeight)
-                            {
-                                moveBlockUp((uint8_t)selectionX + ((uint8_t)(selectionY-1) * boardWidth));
-                                moves++;
-                                updateConnected();
-                                playGameAction();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if ((selectionY > -1) && (selectionY < boardHeight))    
-                        {
-                            if (selectionX == -1)
-                            {
-                                moveBlockRight((uint8_t)(selectionX + 1) + ((uint8_t)selectionY * boardWidth));
-                                moves++;
-                                updateConnected();
-                                playGameAction();
-                            }
-                            else
-                            {
-                                if (selectionX == boardWidth)
-                                {
-                                    moveBlockLeft( (uint8_t)(selectionX - 1) + ((uint8_t)selectionY * boardWidth));
-                                    updateConnected();
-                                    moves++;
-                                    playGameAction();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            playErrorSound();
-                        }
-                    }
-                }
-                levelDone = isLevelDone(); 
-                if(levelDone)
-                {
-                    levelDoneFrames = maxLevelDoneFrames;
-                    SelectMusic(musLevelClear, 0);
-                    //hide cursor it's only sprite we use
-                    hideCursors();
-                }
-            }
-            else
-            {
-                if (levelDoneFrames == 0)
-                {
-                    //goto next level
-                    if (difficulty == diffRandom)
-                    {
-                        //ned new seed based on time
-                        randomSeedGame = getRandomSeed();
-                        initLevel(randomSeedGame);
-                        SelectMusic(musGame, 1);
-                        //show cursor again (it's actually to early but i'm not fixing that)
-                        setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
-                        showCursors();
-                        nextDrawWhat = drwNone;
-                    }
-                    else
-                    {   
-                        //goto next level if any
-                        if (selectedLevel < maxLevel)
-                        {
-                            selectedLevel++;
-                            unlockLevel(gameMode, difficulty, selectedLevel-1);
-                            initLevel(randomSeedGame);
-                            SelectMusic(musGame, 1);
-                            //show cursor again (it's actually to early but i'm not fixing that)
-                            setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
-                            showCursors();
-                            nextDrawWhat = drwNone;
-                        }
-                        else //Goto some congrats screen
-                        {
-                            gameState = gsInitLevelsCleared;
-                        }
-                    }
-                }
-            }
+			if(buttonReleased(BUTTON_1) || (!(buttonReleased(BUTTON_1)) && 
+				(((MousePlayfieldX == selectionX) && (MousePlayfieldY == selectionY)) || 
+				((*MOUSE_X >= (int16_t) maxBoardBgWidth * 8) && (*MOUSE_X < (((int16_t)maxBoardBgWidth + 6)*8)) && 
+				(*MOUSE_Y >= SCREEN_Y_OFFSET + (4 * 8 )) && (*MOUSE_Y < SCREEN_Y_OFFSET + (6 * 8 ))))))
+			{
+					
+				if(!levelDone)
+				{
+					if ((selectionX > -1) && (selectionX < boardWidth) &&
+						(selectionY > -1) && (selectionY < boardHeight))
+					{   
+						if (gameMode != gmSlide)
+						{
+							rotateBlock((uint8_t)selectionX + ((uint8_t)selectionY * boardWidth));
+							moves++;
+							updateConnected();
+							playGameAction();
+						}
+						else
+						{
+							playErrorSound();
+						}
+					}
+					else
+					{
+						if ((selectionX > -1) && (selectionX < boardWidth))
+						{
+							if (selectionY == -1)
+							{
+								moveBlockDown((uint8_t)selectionX + ((uint8_t)(selectionY+1) * boardWidth));
+								moves++;
+								updateConnected();
+								playGameAction();
+							}
+							else
+							{
+								if (selectionY == boardHeight)
+								{
+									moveBlockUp((uint8_t)selectionX + ((uint8_t)(selectionY-1) * boardWidth));
+									moves++;
+									updateConnected();
+									playGameAction();
+								}
+							}
+						}
+						else
+						{
+							if ((selectionY > -1) && (selectionY < boardHeight))    
+							{
+								if (selectionX == -1)
+								{
+									moveBlockRight((uint8_t)(selectionX + 1) + ((uint8_t)selectionY * boardWidth));
+									moves++;
+									updateConnected();
+									playGameAction();
+								}
+								else
+								{
+									if (selectionX == boardWidth)
+									{
+										moveBlockLeft( (uint8_t)(selectionX - 1) + ((uint8_t)selectionY * boardWidth));
+										updateConnected();
+										moves++;
+										playGameAction();
+									}
+								}
+							}
+							else
+							{
+								playErrorSound();
+							}
+						}
+					}
+					levelDone = isLevelDone(); 
+					if(levelDone)
+					{
+						levelDoneFrames = maxLevelDoneFrames;
+						SelectMusic(musLevelClear, 0);
+						//hide cursor it's only sprite we use
+						hideCursors();
+					}
+				}
+				else
+				{
+					if (levelDoneFrames == 0)
+					{
+						//goto next level
+						if (difficulty == diffRandom)
+						{
+							//ned new seed based on time
+							randomSeedGame = getRandomSeed();
+							initLevel(randomSeedGame);
+							SelectMusic(musGame, 1);
+							//show cursor again (it's actually to early but i'm not fixing that)
+							setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
+							showCursors();
+							nextDrawWhat = drwNone;
+						}
+						else
+						{   
+							//goto next level if any
+							if (selectedLevel < maxLevel)
+							{
+								selectedLevel++;
+								unlockLevel(gameMode, difficulty, selectedLevel-1);
+								initLevel(randomSeedGame);
+								SelectMusic(musGame, 1);
+								//show cursor again (it's actually to early but i'm not fixing that)
+								setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
+								showCursors();
+								nextDrawWhat = drwNone;
+							}
+							else //Goto some congrats screen
+							{
+								gameState = gsInitLevelsCleared;
+							}
+						}
+					}
+				}
+			}
         }
     }
 
-    if (buttonReleased(BUTTON_2))
+    if (buttonReleased(BUTTON_2) || (!justunpaused && !anyButtonReleased() && mouseButtonReleased(MOUSE_LEFT) &&
+		(*MOUSE_X >= (int16_t)maxBoardBgWidth * 8) && (*MOUSE_X < ((int16_t)maxBoardBgWidth + 4)*8) && 
+		(*MOUSE_Y >= SCREEN_Y_OFFSET + 7 * 8 ) && (*MOUSE_Y < SCREEN_Y_OFFSET + 9 * 8 )) || 
+		(!anyButtonReleased() && mouseButtonReleased(MOUSE_RIGHT) && mouseInGameBounds()))
     {
         if(!levelDone)
         {
@@ -347,25 +412,10 @@ void game()
             }
             else
             {
-                //need to enable early again to play backsound
-                //normally unpause does it but we only unpause
-                //after fade
-                setSoundOn(wasSoundOn);
-                hideCursors();
-                playMenuBackSound();
-                gameState = gsInitLevelSelect;
-                doUnPause();
-                //unpause sets cursor visible !
-                hideCursors();
-                //need to reset the level to initial state when going back to level selector
-                //could not find a better way unfortunatly
-                //also we do not want to reset the randomseed used for random level generating
-                //or a new level would have been created when going back we only want the level
-                //with random to change when pressing left and right in the level selector
-                //this way it stays consistent with the normal levels
-                //and the player can replay the level if he wants to
-                initLevel(randomSeedGame);
+                goBackPaused();
             }
         }
     }
+
+	justunpaused = 0;
 }

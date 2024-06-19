@@ -51,7 +51,9 @@ void levelsCleared()
     }
 
     if (buttonReleased(BUTTON_1) || 
-        buttonReleased(BUTTON_2)) 
+        buttonReleased(BUTTON_2) || 
+		(!anyButtonReleased() && (mouseButtonReleased(MOUSE_LEFT) || mouseButtonReleased(MOUSE_RIGHT)) &&
+		 mouseInGameBounds())) 
     {
         playMenuAcknowlege();
         titleStep = tsMainMenu;

@@ -109,7 +109,9 @@ void helpLegend(uint8_t nextState)
 	set_bkg_tile_xy(4, 13, 23);
 	printMessage(7, 13, "FILLED");
 
-    if (buttonReleased(BUTTON_1))
+    if (buttonReleased(BUTTON_1) || 
+		(!anyButtonReleased() && (mouseButtonReleased(MOUSE_LEFT) || mouseButtonReleased(MOUSE_RIGHT)) &&
+		 mouseInGameBounds()))
     {
         playMenuAcknowlege();
         gameState = nextState;
@@ -355,7 +357,9 @@ void helpDoSlideRotate(uint8_t nextState)
 	drawCursors();
     updateCursorFrame();
    
-    if (buttonReleased(BUTTON_1))
+    if (buttonReleased(BUTTON_1) || 
+		(!anyButtonReleased() && (mouseButtonReleased(MOUSE_LEFT) || mouseButtonReleased(MOUSE_RIGHT)) &&
+		 mouseInGameBounds()))
     {
         playMenuAcknowlege();
         gameState = nextState;

@@ -7,6 +7,15 @@
 #include "blocktiles.h"
 
 uint32_t frames_drawn = 0;
+uint8_t PREVGAMEPAD1 = 0;
+uint8_t PREVMOUSE_BUTTONS = 0;
+int16_t PREVMOUSE_X = 0;
+int16_t PREVMOUSE_Y = 0;
+int16_t INITIALMOUSE_X = 0;
+int16_t INITIALMOUSE_Y = 0;
+bool firstSetPrevInputs = true;
+bool didMouseMove = false;
+bool prevMousePosReset = false;
 
 Image* currentTiles = NULL;
 
@@ -145,4 +154,56 @@ void drawImage( uint32_t x , uint32_t y, Image *img)
 uint8_t random_u8(uint8_t val)
 {
 	return (uint8_t)(rand() % val);
+}
+
+void updatePrevInputs()
+{
+	if(firstSetPrevInputs)
+	{
+		INITIALMOUSE_X = *MOUSE_X;
+		INITIALMOUSE_Y = *MOUSE_Y;
+		firstSetPrevInputs = false;
+	}
+	PREVGAMEPAD1 = *GAMEPAD1;
+	PREVMOUSE_BUTTONS = *MOUSE_BUTTONS;
+	if(!prevMousePosReset)
+	{
+		PREVMOUSE_X = *MOUSE_X;
+		PREVMOUSE_Y = *MOUSE_Y;
+		if(!didMouseMove)
+			didMouseMove = (*MOUSE_X != INITIALMOUSE_X) || (*MOUSE_Y != INITIALMOUSE_Y);
+	}
+	prevMousePosReset = false;
+}
+
+bool mouseMoved()
+{
+	return (PREVMOUSE_X != *MOUSE_X) || (PREVMOUSE_Y != *MOUSE_Y);
+}
+
+void resetPrevMousePos()
+{
+	prevMousePosReset = true;
+	PREVMOUSE_X = -1;
+	PREVMOUSE_Y = -1;
+}
+
+bool mouseMovedAtleastOnce()
+{
+	return didMouseMove;
+}
+
+bool mouseButtonReleased(int Button)
+{
+	return ((PREVMOUSE_BUTTONS & Button) && (!(*MOUSE_BUTTONS & Button)));
+}
+
+bool mouseInGameBounds()
+{
+	return (*MOUSE_Y <= SCREEN_SIZE) && (*MOUSE_X <= SCREEN_SIZE) && (*MOUSE_Y >= 0) && (*MOUSE_X >=0);
+}
+
+bool anyButtonReleased()
+{
+	return buttonReleased(BUTTON_1) || buttonReleased(BUTTON_2) || buttonReleased(BUTTON_DOWN) || buttonReleased(BUTTON_LEFT) || buttonReleased(BUTTON_RIGHT) || buttonReleased(BUTTON_UP);
 }

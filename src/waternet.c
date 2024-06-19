@@ -19,7 +19,7 @@
 //intialisation of game & global variables
 void start()
 {
-    PREVGAMEPAD1 = *GAMEPAD1;
+    updatePrevInputs();
 	option = 0;
     difficulty = diffNormal;
     selectedLevel = 1;
@@ -89,6 +89,6 @@ void update()
             intro();
             break;
     } 
-	PREVGAMEPAD1 = *GAMEPAD1;
+	updatePrevInputs();
 	frames_drawn++;
  }

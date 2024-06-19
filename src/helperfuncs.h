@@ -45,4 +45,11 @@ void set_bkg_tiles(uint32_t x, uint32_t y, Image *map);
 void drawImage( uint32_t x , uint32_t y, Image* img);
 uint8_t random_u8(uint8_t val);
 bool buttonReleased(int Button);
+void updatePrevInputs();
+void resetPrevMousePos();
+bool mouseMoved();
+bool mouseMovedAtleastOnce();
+bool mouseButtonReleased(int Button);
+bool mouseInGameBounds();
+bool anyButtonReleased();
 #endif
