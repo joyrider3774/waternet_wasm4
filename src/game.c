@@ -37,23 +37,28 @@ uint8_t drawGame(uint8_t drawWhat)
 	switch (gameMode)
 	{
 		case gmRotate:
-			printMessage(maxBoardBgWidth, 4, "a:");
-			printMessage(maxBoardBgWidth, 5, "ROTATE");
+			printMessageWithSelectedColorMousePos(maxBoardBgWidth, 4, "a:    ");
+			printMessageWithSelectedColorMousePos(maxBoardBgWidth, 5, "ROTATE");
 			break;
 		case gmSlide:
-			printMessage(maxBoardBgWidth, 4, "a:");
-			printMessage(maxBoardBgWidth, 5, "SLIDE");
+			printMessageWithSelectedColorMousePos(maxBoardBgWidth, 4, "a:    ");
+			printMessageWithSelectedColorMousePos(maxBoardBgWidth, 5, "SLIDE ");
 			break;
 		case gmRotateSlide:
-			printMessage(maxBoardBgWidth, 4, "a:");
-			printMessage(maxBoardBgWidth, 5, "ROSLID");
+			printMessageWithSelectedColorMousePos(maxBoardBgWidth, 4, "a:    ");
+			printMessageWithSelectedColorMousePos(maxBoardBgWidth, 5, "ROSLID");
 			break;
 	}
 
 	//B:BACK
-	printMessage(maxBoardBgWidth, 7, "b:");
-	printMessage(maxBoardBgWidth, 8, "BACK");
+	printMessageWithSelectedColorMousePos(maxBoardBgWidth, 7, "b:  ");
+	printMessageWithSelectedColorMousePos(maxBoardBgWidth, 8, "BACK");
 
+	printMessageWithSelectedColorMousePos(maxBoardBgWidth, 10, "\x78:UP  ");
+	printMessageWithSelectedColorMousePos(maxBoardBgWidth, 12, "\x79:RIGH");
+	printMessageWithSelectedColorMousePos(maxBoardBgWidth, 14, "\x7a:DOWN");
+	printMessageWithSelectedColorMousePos(maxBoardBgWidth, 16, "\x7b:LEFT");
+	
 	//MOVES:
 	printMessage(maxBoardBgWidth, 2, "MOVES:");
 
@@ -72,8 +77,10 @@ uint8_t drawGame(uint8_t drawWhat)
         printMessage(((16 - 13) >> 1), (maxBoardBgHeight >> 1) - 2, "[************]");
         printMessage(((16 - 13) >> 1), (maxBoardBgHeight >> 1) - 1, "| LEVEL DONE +");
         printMessage(((16 - 13) >> 1), (maxBoardBgHeight >> 1)    , "|            +");
-        printMessage(((16 - 13) >> 1), (maxBoardBgHeight >> 1) + 1, "| a CONTINUE +");
-        printMessage(((16 - 13) >> 1), (maxBoardBgHeight >> 1) + 2, "<############>");
+        printMessage(((16 - 13) >> 1), (maxBoardBgHeight >> 1) + 1, "|");
+		printMessageWithSelectedColorMousePos(((16 - 13) >> 1) + 2, (maxBoardBgHeight >> 1) + 1, "a CONTINUE");
+        printMessage(((16 - 13) >> 1)+ 13, (maxBoardBgHeight >> 1) + 1, "+");
+		printMessage(((16 - 13) >> 1), (maxBoardBgHeight >> 1) + 2, "<############>");
     }
 
     if(drawWhat == drwPause)
@@ -84,8 +91,12 @@ uint8_t drawGame(uint8_t drawWhat)
         printMessage(0, (maxBoardBgHeight >> 1) - 3, "[**************]");
         printMessage(0, (maxBoardBgHeight >> 1) - 2, "|PLEASE CONFIRM+"); 
         printMessage(0, (maxBoardBgHeight >> 1) - 1, "|              +"); 
-        printMessage(0, (maxBoardBgHeight >> 1) + 0, "|   a PLAY     +");
-        printMessage(0, (maxBoardBgHeight >> 1) + 1, "|   b TO QUIT  +");
+        printMessage(0, (maxBoardBgHeight >> 1) + 0, "|   ");
+		printMessageWithSelectedColorMousePos(0+4, (maxBoardBgHeight >> 1) + 0, "a PLAY");
+		printMessage(0+10, (maxBoardBgHeight >> 1) + 0, "     +");
+        printMessage(0, (maxBoardBgHeight >> 1) + 1, "|   ");
+		printMessageWithSelectedColorMousePos(0+4, (maxBoardBgHeight >> 1) + 1, "b TO QUIT");
+		printMessage(0+13, (maxBoardBgHeight >> 1)+1, "  +");
         printMessage(0, (maxBoardBgHeight >> 1) + 2, "<##############>");
     }
     return drawWhat;
@@ -182,7 +193,9 @@ void game()
     else
         updateCursorFrame();
 
-    if (buttonReleased(BUTTON_DOWN))
+    if (buttonReleased(BUTTON_DOWN) || (!anyButtonReleased() && mouseButtonReleased(MOUSE_LEFT) &&
+		((*MOUSE_X >= (int16_t) maxBoardBgWidth * 8) && (*MOUSE_X < (((int16_t)maxBoardBgWidth + 6)*8)) && 
+		(*MOUSE_Y >= SCREEN_Y_OFFSET + (14 * 8 )) && (*MOUSE_Y < SCREEN_Y_OFFSET + (15 * 8 )))))
     {
         if(!levelDone && !paused)
         {
@@ -196,8 +209,9 @@ void game()
             setCursorPos(0, (uint8_t)(boardX + selectionX), (uint8_t)(boardY + selectionY));
         }
     } 
-
-    if (buttonReleased(BUTTON_UP))
+    if (buttonReleased(BUTTON_UP) || (!anyButtonReleased() && mouseButtonReleased(MOUSE_LEFT) &&
+		((*MOUSE_X >= (int16_t) maxBoardBgWidth * 8) && (*MOUSE_X < (((int16_t)maxBoardBgWidth + 6)*8)) && 
+		(*MOUSE_Y >= SCREEN_Y_OFFSET + (10 * 8 )) && (*MOUSE_Y < SCREEN_Y_OFFSET + (11 * 8 )))))
     {
         if (!levelDone && !paused)
         {
@@ -212,7 +226,9 @@ void game()
         }
     }
 
-    if (buttonReleased(BUTTON_RIGHT))
+    if (buttonReleased(BUTTON_RIGHT) || (!anyButtonReleased() && mouseButtonReleased(MOUSE_LEFT) &&
+		((*MOUSE_X >= (int16_t) maxBoardBgWidth * 8) && (*MOUSE_X < (((int16_t)maxBoardBgWidth + 6)*8)) && 
+		(*MOUSE_Y >= SCREEN_Y_OFFSET + (12 * 8 )) && (*MOUSE_Y < SCREEN_Y_OFFSET + (13 * 8 )))))
     {
         if (!levelDone && !paused)
         {
@@ -227,7 +243,9 @@ void game()
         }
     }
 
-    if (buttonReleased(BUTTON_LEFT))
+    if (buttonReleased(BUTTON_LEFT) || (!anyButtonReleased() && mouseButtonReleased(MOUSE_LEFT) &&
+		((*MOUSE_X >= (int16_t) maxBoardBgWidth * 8) && (*MOUSE_X < (((int16_t)maxBoardBgWidth + 6)*8)) && 
+		(*MOUSE_Y >= SCREEN_Y_OFFSET + (16 * 8 )) && (*MOUSE_Y < SCREEN_Y_OFFSET + (17 * 8 )))))
     {
         if(!levelDone && !paused)
         {

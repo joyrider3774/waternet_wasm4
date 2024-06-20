@@ -19,20 +19,20 @@ void drawLevelSelect()
     printNumber(maxBoardBgWidth + 4 , 1 , selectedLevel, 2);
     
     //B:BACK
-    printMessage(maxBoardBgWidth  , 7 , "b:");
-    printMessage(maxBoardBgWidth  , 8 , "BACK");
+    printMessageWithSelectedColorMousePos(maxBoardBgWidth, 7, "b:  ");
+    printMessageWithSelectedColorMousePos(maxBoardBgWidth, 8, "BACK");
     
     //A:PLAY
-    printMessage(maxBoardBgWidth  , 4 , "a:");
-    printMessage(maxBoardBgWidth  , 5 , "PLAY");
+    printMessageWithSelectedColorMousePos(maxBoardBgWidth, 4, "a:  ");
+    printMessageWithSelectedColorMousePos(maxBoardBgWidth, 5, "PLAY");
 
 	//LEFT:PREV
-    printMessage(maxBoardBgWidth  , 10 , "LEFT:");
-    printMessage(maxBoardBgWidth  , 11 , "PREV");
+    printMessageWithSelectedColorMousePos(maxBoardBgWidth, 10, "LEFT:");
+    printMessageWithSelectedColorMousePos(maxBoardBgWidth, 11, "PREV ");
 
 	//RIGHT:NEXT
-    printMessage(maxBoardBgWidth  , 13 , "RIGHT:");
-    printMessage(maxBoardBgWidth  , 14, "NEXT");
+    printMessageWithSelectedColorMousePos(maxBoardBgWidth, 13, "RIGHT:");
+    printMessageWithSelectedColorMousePos(maxBoardBgWidth, 14, "NEXT  ");
 
     //Locked & Unlocked keywoard
     uint8_t tmpUnlocked = levelUnlocked(gameMode, difficulty, selectedLevel -1);

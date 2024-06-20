@@ -182,30 +182,30 @@ void drawTitleScreen()
     switch (titleStep)
     {
         case tsMainMenu:
-            printMessage(6, 8, "MAIN MENU");
-            printMessage(7, 10, "START");
-            printMessage(7, 11, "HELP");
-            printMessage(7, 12, "OPTIONS");
-            printMessage(7, 13, "CREDITS");
+			printMessage(6, 8, "MAIN MENU");
+            printMessageWithSelectedColor(7, 10, "START", mainMenu + 10);
+            printMessageWithSelectedColor(7, 11, "HELP", mainMenu + 10);
+            printMessageWithSelectedColor(7, 12, "OPTIONS", mainMenu + 10);
+            printMessageWithSelectedColor(7, 13, "CREDITS", mainMenu + 10);
             break;
         case tsDifficulty:
-            printMessage(6, 8, "VERY EASY");
-            printMessage(6, 9, "EASY");
-            printMessage(6, 10, "NORMAL");
-            printMessage(6, 11, "HARD");
-            printMessage(6, 12, "VERY HARD");
-            printMessage(6, 13, "RANDOM");
-			printMessage(6, 14, "BACK");
+            printMessageWithSelectedColor(6, 8, "VERY EASY", difficulty + 8);
+            printMessageWithSelectedColor(6, 9, "EASY", difficulty + 8);
+            printMessageWithSelectedColor(6, 10, "NORMAL", difficulty + 8);
+            printMessageWithSelectedColor(6, 11, "HARD", difficulty + 8);
+            printMessageWithSelectedColor(6, 12, "VERY HARD", difficulty + 8);
+            printMessageWithSelectedColor(6, 13, "RANDOM", difficulty + 8);
+			printMessageWithSelectedColor(6, 14, "BACK", difficulty + 8);
             break;
         case tsGameMode:
             if (mainMenu == mmStartGame)
                 printMessage(4, 8, "SELECT  MODE");
             else
                 printMessage(6, 8, "MODE HELP");
-            printMessage(7, 10, "ROTATE");
-            printMessage(7, 11, "SLIDE");
-            printMessage(7, 12, "ROSLID");
-			printMessage(7, 13, "BACK");
+            printMessageWithSelectedColor(7, 10, "ROTATE", gameMode + 10);
+            printMessageWithSelectedColor(7, 11, "SLIDE", gameMode + 10);
+            printMessageWithSelectedColor(7, 12, "ROSLID", gameMode + 10);
+			printMessageWithSelectedColor(7, 13, "BACK", gameMode + 10);
             break;
         case tsCredits:
             printMessage(7, 8, "CREDITS");            
@@ -217,25 +217,26 @@ void drawTitleScreen()
             printMessage(6, 8, "OPTIONS");            
          
             if(isMusicOn())
-                printMessage(5, 10, "MUSIC  ON");
+                printMessageWithSelectedColor(5, 10, "MUSIC  ON", option + 10);
             else
-                printMessage(5, 10, "MUSIC  OFF");
+                printMessageWithSelectedColor(5, 10, "MUSIC  OFF", option + 10);
 
             if(isSoundOn())
-                printMessage(5, 11, "SOUND  ON");
+                printMessageWithSelectedColor(5, 11, "SOUND  ON", option + 10);
             else
-                printMessage(5, 11, "SOUND  OFF");
+                printMessageWithSelectedColor(5, 11, "SOUND  OFF", option + 10);
             
-            printMessage(5, 12, getPaletteName());
+            printMessageWithSelectedColor(5, 12, getPaletteName(), option + 10);
             
             if(getPalInverse())
-                printMessage(5, 13, "INVERT ON");
+                printMessageWithSelectedColor(5, 13, "INVERT ON", option + 10);
             else
-                printMessage(5, 13, "INVERT OFF");
-            printMessage(5, 14, "BACK");
+                printMessageWithSelectedColor(5, 13, "INVERT OFF", option + 10);
+            printMessageWithSelectedColor(5, 14, "BACK", option + 10);
 			break;
     }
 
+	setDrawColor(2,0,0,0);
     //set menu tile
     switch (titleStep)
     {
@@ -252,6 +253,7 @@ void drawTitleScreen()
             set_bkg_tile_xy(4, 10 + option, leftMenu);
             break;
     }
+	setDrawColor(1,2,3,4);
 }
 
 void initTitleScreen()

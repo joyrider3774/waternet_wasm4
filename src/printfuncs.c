@@ -1,6 +1,6 @@
 #include <stdint.h>
+#include <string.h>
 #include "wasm4.h"
-
 #include "commonvars.h"
 #include "printfuncs.h"
 #include "helperfuncs.h"
@@ -116,7 +116,23 @@ void printMessage(uint8_t ax, uint8_t ay, const char* amsg)
             case 'b':
                 tile = 117U;
                 break;
-            
+			
+			case '\x78':
+				tile = 120U;
+				break;
+
+			case '\x79':
+				tile = 121U;
+				break;
+
+			case '\x7a':
+				tile = 122U;
+				break;
+
+			case '\x7b':
+				tile = 123U;
+				break;
+
             default:
                 if ((fChar >= 'A') &&  (fChar <= 'Z'))
                     tile = ((uint32_t)fChar + 25u);
@@ -154,4 +170,24 @@ void printCongratsScreen(uint8_t ax, uint8_t ay, const char* amsg)
         set_bkg_tile_xy(ax + index, ay, tile);
         ++index;
     }
+}
+
+void printMessageWithSelectedColor(uint8_t ax, uint8_t ay, const char* amsg, uint8_t selectedy)
+{
+	if (selectedy == ay)
+		setDrawColor(2,0,0,0);
+	else
+		setDrawColor(1,2,3,4);
+	printMessage(ax, ay, amsg);
+	setDrawColor(1,2,3,4);
+}
+
+void printMessageWithSelectedColorMousePos(uint8_t ax, uint8_t ay, const char* amsg)
+{
+	if ((*MOUSE_X >= ax*8) && (*MOUSE_Y -SCREEN_Y_OFFSET >= ay*8) && (*MOUSE_X < (ax + (uint8_t)strlen(amsg)) *8) && (*MOUSE_Y -SCREEN_Y_OFFSET < (ay+1)*8))
+		setDrawColor(2,0,0,0);
+	else
+		setDrawColor(1,0,0,0);
+	printMessage(ax, ay, amsg);
+	setDrawColor(1,2,3,4);
 }
