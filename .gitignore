@@ -1,3 +1,9 @@
 /.vscode
 /build
 /release
+/waternet-windows.tar.gz
+/waternet.wasm
+/waternet-cart.tar.gz
+/waternet-html.tar.gz
+/waternet-linux.tar.gz
+/waternet-mac.tar.gz
