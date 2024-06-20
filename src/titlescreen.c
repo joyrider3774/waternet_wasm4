@@ -91,7 +91,14 @@ bool setMouseSelection()
 					difficulty = diffRandom;
 				return true;
 			}
-			break;
+
+			if ((*MOUSE_X >= 6*8) && (*MOUSE_X < (6 + 4) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 14 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 15*8))
+			{
+				if(mouseMoved())
+					difficulty = 6;
+				return true;
+			}
+			break;	
 		case tsGameMode:
         	if ((*MOUSE_X >= 7*8) && (*MOUSE_X < (7 + 6) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 10 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 11*8))
 			{
@@ -113,36 +120,50 @@ bool setMouseSelection()
 					gameMode = gmRotateSlide;
 				return true;
 			}
+
+			if ((*MOUSE_X >= 7*8) && (*MOUSE_X < (7 + 4) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 13 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 14*8))
+			{
+				if(mouseMoved())
+					gameMode = 3;
+				return true;
+			}
 			break;
 		case tsCredits:
 			return mouseInGameBounds();
 			break;
 		case tsOptions:
-			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (7 + 9) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 10 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 11*8))
+			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (5 + 9) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 10 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 11*8))
 			{
 				if(mouseMoved())
 					option = opMusic;
 				return true;
 			}
 
-			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (7 + 9) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 11 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 12*8))
+			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (5 + 9) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 11 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 12*8))
 			{
 				if(mouseMoved())
 					option = opSound;
 				return true;
 			}
 
-			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (7 + ((int16_t)strlen(getPaletteName()))) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 12 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 13*8))
+			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (5 + ((int16_t)strlen(getPaletteName()))) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 12 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 13*8))
 			{
 				if(mouseMoved())
 					option = opColor;
 				return true;
 			}
 
-			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (7 + 10) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 13 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 14*8))
+			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (5 + 10) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 13 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 14*8))
 			{
 				if(mouseMoved())
 					option = opColorInvert;
+				return true;
+			}
+
+			if ((*MOUSE_X >= 5*8) && (*MOUSE_X < (5 + 4) * 8 ) && (*MOUSE_Y >= SCREEN_Y_OFFSET + 14 * 8) && (*MOUSE_Y < SCREEN_Y_OFFSET + 15*8))
+			{
+				if(mouseMoved())
+					option = 4;
 				return true;
 			}
 			break;
@@ -174,6 +195,7 @@ void drawTitleScreen()
             printMessage(6, 11, "HARD");
             printMessage(6, 12, "VERY HARD");
             printMessage(6, 13, "RANDOM");
+			printMessage(6, 14, "BACK");
             break;
         case tsGameMode:
             if (mainMenu == mmStartGame)
@@ -183,12 +205,13 @@ void drawTitleScreen()
             printMessage(7, 10, "ROTATE");
             printMessage(7, 11, "SLIDE");
             printMessage(7, 12, "ROSLID");
+			printMessage(7, 13, "BACK");
             break;
         case tsCredits:
             printMessage(7, 8, "CREDITS");            
-            printMessage(5, 10, "CREATED BY");
-            printMessage(4, 11, "WILLEMS DAVY");
-            printMessage(4, 12, "JOYRIDER3774");
+            printMessage(5, 11, "CREATED BY");
+            printMessage(4, 12, "WILLEMS DAVY");
+            printMessage(4, 13, "JOYRIDER3774");
             break;
         case tsOptions:
             printMessage(6, 8, "OPTIONS");            
@@ -209,7 +232,8 @@ void drawTitleScreen()
                 printMessage(5, 13, "INVERT ON");
             else
                 printMessage(5, 13, "INVERT OFF");
-            break;
+            printMessage(5, 14, "BACK");
+			break;
     }
 
     //set menu tile
@@ -294,21 +318,21 @@ void titleScreen()
                 }
                 break;
             case tsGameMode:
-                if(gameMode < gmCount-1)
+                if(gameMode < gmCount)
                 {
                     playMenuSelectSound();
                     gameMode++;
                 }
                 break; 
             case tsDifficulty:
-                if(difficulty < diffCount-1)
+                if(difficulty < diffCount)
                 {
                     playMenuSelectSound();
                     difficulty++;
                 }
                 break;
             case tsOptions:
-                if(option < opCount-1)
+                if(option < opCount)
                 {
                     playMenuSelectSound();
                     option++;
@@ -378,6 +402,10 @@ void titleScreen()
                             setPalIndex(i);
                             setActiveColorSaveState(i);
                             break;
+						case 4: //back
+							titleStep = tsMainMenu;
+                			playMenuBackSound();
+							break;
                     }
                 }
                 break;
@@ -410,38 +438,60 @@ void titleScreen()
                             break;
                         case gmRotateSlide:
                             gameState = gsInitHelpRotateSlide;
-                            break; 
+                            break;
+						case 3: // back
+							titleStep--;
+                			playMenuBackSound();
+							break;
                     }
                 }
                 break;
-
             case mmStartGame:
-                if (titleStep < tsDifficulty)
-                {
-                    titleStep++;
-                }
-                else
-                {
-                    if (difficulty == diffRandom)
-                        selectedLevel = 1;
-                    else
-                        selectedLevel = lastUnlockedLevel(gameMode, difficulty);
-                    
-                    if (gameMode == gmRotate)
-                        posAdd = 0;
-                    else
-                        posAdd = 1;
-                    //set randomseet to systime here
-                    //it will be reused all the time
-                    //with the level generating
-                    //but not when going back from
-                    //level playing to level selector
-                    //when calling init level there
-                    randomSeedGame = getRandomSeed();
-                    initLevel(randomSeedGame);
+				//back
+				if((titleStep == tsGameMode) && (gameMode == 3))
+				{
+					titleStep--;
+	               	playMenuBackSound();
+				}
+				else
+				{
+					if (titleStep < tsDifficulty)
+					{
+						titleStep++;
+					}
+					else
+					{
+						//back
+						if(difficulty == 6)
+						{
+							titleStep--;
+							playMenuBackSound();
+						}
+						else
+						{
+						
+							if (difficulty == diffRandom)
+								selectedLevel = 1;
+							else
+								selectedLevel = lastUnlockedLevel(gameMode, difficulty);
+							
+							if (gameMode == gmRotate)
+								posAdd = 0;
+							else
+								posAdd = 1;
+							//set randomseet to systime here
+							//it will be reused all the time
+							//with the level generating
+							//but not when going back from
+							//level playing to level selector
+							//when calling init level there
+							randomSeedGame = getRandomSeed();
+							initLevel(randomSeedGame);
 
-                    gameState = gsInitLevelSelect;
-                }  
+							gameState = gsInitLevelSelect;
+						}
+					}
+				}
                 break;
         }
     }
